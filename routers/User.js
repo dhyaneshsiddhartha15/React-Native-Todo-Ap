@@ -21,7 +21,7 @@ const singleUpload = multer().single("avatar");
 const router = express.Router();
 
 router.route("/register").post(singleUpload, register);
-router.route("/verify").post(isAuthenticated, verify);
+router.route("/verify").post(verify);
 router.route("/login").post(login);
 router.route("/logout").get(logout);
 router.route("/newtask").post(isAuthenticated, addTask);
