@@ -59,9 +59,10 @@ export const register = async (req, res) => {
 export const verify = async (req, res) => {
   try {
     const otp = Number(req.body.otp);
+    console.log("OTP entered is",otp);
 
     const user = await User.findById(req.user._id);
-
+console.log("User is",user);
     if (user.otp !== otp || user.otp_expiry < Date.now()) {
       return res
         .status(400)
@@ -76,6 +77,7 @@ export const verify = async (req, res) => {
 
     sendToken(res, user, 200, "Account Verified");
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
