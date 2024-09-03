@@ -24,12 +24,7 @@ export const register = async (req, res) => {
         .status(400)
         .json({ success: false, message: "User already exists" });
     }
-
-    const otp = Math.floor(Math.random() * 1000000);
-    const otpExpireTime = (process.env.OTP_EXPIRE || 15) * 60 * 1000;
-    const otp_expiry = new Date(Date.now() + otpExpireTime);
     const mycloud = await cloudinary.v2.uploader.upload(file.content);
-
     user = await User.create({
       name,
       email,
@@ -38,23 +33,16 @@ export const register = async (req, res) => {
         public_id: mycloud.public_id,
         url: mycloud.secure_url,
       },
-      otp,
-      otp_expiry,
+      verified: true, 
     });
 
-    await sendMail(email, "Verify your account", `Your OTP is ${otp}`);
-
-    sendToken(
-      res,
-      user,
-      201,
-      "OTP sent to your email, please verify your account"
-    );
+    sendToken(res, user, 201, "Registration successful");
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 export const verify = async (req, res) => {
   try {
